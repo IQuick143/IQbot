@@ -1,0 +1,7 @@
+# development
+__pycache__
+/.venv
+/old
+
+# data (duh)
+/data
