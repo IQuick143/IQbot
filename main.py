@@ -104,7 +104,7 @@ async def _extctl_unload(ctx: commands.Context, extension: str):
 	await util.add_react(ctx.message, util.emojis.check_mark)
 
 
-#bot.load_extension(settings.ext_dir + ".MC")
+bot.load_extension(settings.ext_dir + ".MC")
 bot.load_extension(settings.ext_dir + ".xkcd")
 
 bot.run(secrets.TOKEN)
