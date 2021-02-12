@@ -43,7 +43,8 @@ class MCCog(commands.Cog):
 				already_whitelisted = json.load(fp)
 
 			if UUID in already_whitelisted.values() and not (ID in already_whitelisted and already_whitelisted[ID] == UUID):
-				await ctx.send("The account is already used for another user "+str(already_whitelisted[ID]), allowed_mentions=discord.AllowedMentions.none())
+				ID_for_UUID = [k for k,v in already_whitelisted.items() if v == UUID]
+				await ctx.send(f"The account is already used for <@!{ID_for_UUID[0]}>", allowed_mentions=discord.AllowedMentions.none())
 				return
 
 			try:
