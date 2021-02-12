@@ -108,3 +108,5 @@ bot.load_extension(settings.ext_dir + ".MC")
 bot.load_extension(settings.ext_dir + ".xkcd")
 
 bot.run(secrets.TOKEN)
+
+exit(exit_code)
