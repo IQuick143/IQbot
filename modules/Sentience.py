@@ -5,19 +5,12 @@ class SentientCog(commands.Cog, name='XKCD'):
 	def __init__(self, bot):
 		self.bot = bot
 
-	@commands.command("set_channel", pass_context=True, description="Set destination")
+	@commands.command("set_channel", pass_context=True, description="Set destination by channel ID")
 	@commands.check(check_if_owner)
 	@commands.dm_only()
-	async def set_channel(self, ctx, server: int, channel: int):
-		self.server = self.bot.get_guild(server)
-		if self.server is None:
-			self.channel = None
-			await ctx.send("Can't find the server")
-			return
-		await ctx.send("Found server:" + self.server.name)
-		self.channel = self.server.get_channel(channel)
+	async def set_channel(self, ctx, channel: int):
+		self.channel = self.bot.get_channel(channel)
 		if self.channel is None:
-			self.server = None
 			await ctx.send("Can't find the channel")
 			return
 		await ctx.send("Found channel:" + self.channel.name)
