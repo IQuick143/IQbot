@@ -18,13 +18,9 @@ bot = commands.Bot(
 @bot.event
 async def on_ready():
 	print("*hacker voice* I'm in... I am " + str(bot.user))
-	bot.cansti = bot.get_guild(settings.CANSTI_ID) #Cansti
-	bot.swamp = bot.cansti.get_channel(settings.SWAMP_ID)
 
 @bot.event
 async def on_message(message):
-	if message.guild is None and message.author.id == settings.IQUICK_ID:
-		await bot.swamp.send(message.content)
 	await bot.process_commands(message)
 
 """
@@ -106,6 +102,7 @@ async def _extctl_unload(ctx: commands.Context, extension: str):
 
 bot.load_extension(settings.ext_dir + ".MC")
 bot.load_extension(settings.ext_dir + ".xkcd")
+bot.load_extension(settings.ext_dir + ".Sentience")
 
 bot.run(secrets.TOKEN)
 
