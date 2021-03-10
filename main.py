@@ -1,14 +1,15 @@
-import asyncio
 import util
 
-import discord
-from discord import utils
 from discord.ext import commands
 
 import data.secrets as secrets
 import data.settings as settings
 
+import logging
+
 # --- Settings ---
+
+logging.basicConfig(level=logging.DEBUG)
 
 bot = commands.Bot(
 	"!",

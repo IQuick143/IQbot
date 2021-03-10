@@ -2,7 +2,7 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict, List, Any, Tuple, Union, Coroutine
+from typing import Dict, Any, Tuple, Union, Coroutine
 
 import aiohttp
 import asyncio

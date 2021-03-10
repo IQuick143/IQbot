@@ -1,17 +1,10 @@
-from typing import Type
-import discord
 from discord.ext import commands, tasks
 import json
 import aiohttp
-from urllib.parse import quote
-from discord.message import PartialMessage
-from discord.utils import resolve_invite
 from fuzzywuzzy.fuzz import WRatio
 import datetime
 import util
 from util import paths, check_if_owner, react_interactive_message
-
-SELF_COG = None
 
 class XKCDCog(commands.Cog, name='XKCD'):
 	def __init__(self, bot):
