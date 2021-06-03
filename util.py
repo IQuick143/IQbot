@@ -2,7 +2,7 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict, Any, Tuple, Union, Coroutine
+from typing import Generator, Dict, Any, Tuple, Union, Coroutine
 
 import aiohttp
 import asyncio
@@ -68,7 +68,7 @@ class BotHTTPError(Exception):
 		self.reason = response.reason
 
 
-# --- Helper functions ---
+# --- Helper functions for d.py ---
 
 def embed_factory(ctx: commands.Context) -> discord.Embed:
 	"""Creates an embed with neutral colour and standard footer."""
@@ -155,6 +155,85 @@ async def react_interactive_message(
 		pass
 	except discord.Forbidden:
 		pass
+
+# --- Helper functions (other) ---
+
+"""Borrowed from wikipedia"""
+def is_prime(n: int) -> bool:
+	"""Primality test using 6k+-1 optimization."""
+	if n <= 3:
+		return n > 1
+	if n % 2 == 0 or n % 3 == 0:
+		return False
+	i = 5
+	while i * i <= n:
+		if n % i == 0 or n % (i + 2) == 0:
+			return False
+		i += 6
+	return True
+
+def factorize(n: int) -> Generator[Tuple[int, int], None, None]:
+	"""
+		Args: n - an integer
+		Returns: A generator of tuples (p, n) where p is the prime and n is the multiplicity, sorted by p
+		Remarks: When n is 0 then an empty generator is returned
+	"""
+	if n == 0:
+		return
+	if n < 0:
+		n = -n
+	
+	divisions = 0
+	while n % 2 == 0:
+		divisions += 1
+		n /= 2
+	if divisions > 0:
+		yield (2, divisions)
+	
+	# avoid a worst-case scenario for large n
+	if n > 65336:
+		if is_prime(n):
+			yield (n, 1)
+			return
+
+	divisor = 3
+	while divisor <= n:
+		divisions = 0
+		while n % divisor == 0:
+			divisions += 1
+			n /= divisor
+		if divisions > 0:
+			yield (divisor, divisions)
+		divisor += 2
+	return
+
+def is_square(n):
+	if n < 0:
+		return False
+	if n <= 1:
+		return True
+	x, y = 1, n
+	while x + 1 < y:
+		mid = (x+y)//2
+		if mid**2 < n:
+			x = mid
+		else:
+			y = mid
+	return n == x*x or n == (x+1)*(x+1)
+
+def is_cube(n):
+	if n < 0:
+		n = -n
+	if n <= 1:
+		return True
+	x, y = 1, n
+	while x + 1 < y:
+		mid = (x+y)//2
+		if mid**3 < n:
+			x = mid
+		else:
+			y = mid
+	return n == x*x*x or n == (x+1)*(x+1)*(x+1)
 
 # --- Checks ---
 
