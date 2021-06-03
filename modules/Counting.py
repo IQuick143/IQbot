@@ -17,7 +17,7 @@ class CounterCog(commands.Cog, name='counting'):
 		self.update_index.cancel()
 
 	@commands.command("addcan", pass_context=True, description="Adds a can")
-	@commands.cooldown(1, 6, commands.BucketType.user)
+	@commands.cooldown(1, 30, commands.BucketType.user)
 	async def addcan(self, ctx):
 		self.can += 1
 		self.changed = True
@@ -46,7 +46,13 @@ class CounterCog(commands.Cog, name='counting'):
 			modifiers += " Lets me tell you about homestuck."
 		await ctx.send(f"You added a can, there are now {self.can} cans.{modifiers}")
 
+	@addcan.error
+	async def addcan_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+			await ctx.send("Please, calm down, the carapacians are doing their best to add the cans but we need a bit of time... (please try again after {:,.2f}s)".format(error.retry_after))
+
 	@commands.command("john", pass_context=True, description="Adds, removes, or gives status of johns in the johnverse")
+	@commands.cooldown(1, 30, commands.BucketType.user)
 	async def john(self, ctx, *, command = ""):
 		message = ""
 		if command == "":
@@ -100,6 +106,11 @@ class CounterCog(commands.Cog, name='counting'):
 		if self.john_add < self.john_kill:
 			message += ".. Somehow..."
 		await ctx.send(message)
+
+	@john.error
+	async def john_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+			await ctx.send("Please, calm down, the johniverse can only handle so many john operations per metasecond... (please try again after {:,.2f}s)".format(error.retry_after))
 
 	@tasks.loop(seconds=300)
 	async def update_index(self):
