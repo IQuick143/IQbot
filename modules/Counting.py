@@ -1,10 +1,10 @@
 from typing import Counter
 from discord.ext import commands, tasks
 import json
-from math import gcd, isqrt
+from math import gcd, floor, sqrt
 from functools import reduce
 from random import random
-from util import paths, check_if_owner, factorize, is_square, is_cube
+from util import paths, factorize, is_square, is_cube
 
 
 class CounterCog(commands.Cog, name='counting'):
@@ -32,7 +32,7 @@ class CounterCog(commands.Cog, name='counting'):
 		if greatest_common_exponent % 3 == 0:
 			modifiers += " These cans make a cube!"
 		if is_square(8*self.can+1):
-			if isqrt(8*self.can+1) % 4 == 3:
+			if floor(sqrt(8*self.can+1)) % 4 == 3:
 				modifiers += " These cans make a triangle and a hexagon!!"
 			else:
 				modifiers += " These cans make a triangle!"
