@@ -4,7 +4,7 @@ import json
 from math import gcd, floor, sqrt
 from functools import reduce
 from random import random
-from util import paths, factorize, is_square, is_cube
+from util import paths, factorize, is_square
 
 
 class CounterCog(commands.Cog, name='counting'):
@@ -54,66 +54,83 @@ class CounterCog(commands.Cog, name='counting'):
 		if isinstance(error, commands.CommandOnCooldown):
 			await ctx.send("Please, calm down, the carapacians are doing their best to add the cans but we need a bit of time... (please try again after {:,.2f}s)\n\nThere are now {} cans.".format(error.retry_after, self.can))
 
-	@commands.command("john", pass_context=True, description="Adds, removes, or gives status of johns in the johnverse")
+	@commands.group("john", pass_context=True, invoke_without_command=True, description="Adds, removes, or gives status of johns in the johnverse")
 	@commands.cooldown(1, 30, commands.BucketType.user)
-	async def john(self, ctx, *, command = ""):
-		message = ""
-		if command == "":
-			message += "Use john add/kill to add or remove a john\n\n"
-		elif command == "add":
-			self.john_add += 1
-			self.changed = True
-
-			modifier = ""
-			if random() < 0.1:
-				modifier += "poor little "
-			if random() < 0.001:
-				modifier += "rare "
-			if random() < 0.04:
-				modifier += "gay "
-			if random() < 0.005:
-				modifier += "limited edition "
-			if self.john_add - self.john_kill == 69 and random() < 0.69:
-				modifier += "horny "
-			if self.john_add - self.john_kill == 413 and random() < 0.413:
-				modifier += "egbert "
-			if len(modifier) == 0 and random() < 0.1:
-				modifier += "completely generic "
-			if len(modifier) == 0 and random() < 0.01:
-				modifier += "extraordinarily generic "
-			message += f"You have successfully added a {modifier}john\n\n"
-		elif command == "kill":
-			self.john_kill += 1
-			self.changed = True
-
-			modifier = ""
-			bonus_sentence = ""
-			if random() < 0.1:
-				modifier += "monstrously "
-				if random() < 0.8:
-					bonus_sentence = " You monster."
-			if random() < 0.04:
-				modifier += "unimaginably "
-				if random() < 0.1:
-					bonus_sentence = " I don't even comprehend."
-			if random() < 0.01:
-				modifier += "very "
-			if random() < 0.005:
-				modifier += "full-on jack-noir "
-				if random() < 0.3:
-					bonus_sentence = " I TOLD YOU ABOUT THE RED MILES JOHN, I TOLD YOU DAWG."
-			if len(modifier) == 0 and random() < 0.1:
-				modifier += "painlessly "
-				if random() < 0.08:
-					bonus_sentence = " v-v"
-			if len(modifier) == 0 and random() < 0.02:
-				modifier += "accidentally "
-				if random() < 0.08:
-					bonus_sentence = " I don't believe your tales."
-			message += f"You have {modifier}killed a john.{bonus_sentence}\n\n"
+	async def john(self, ctx, *, command):
+		if not command:
+			message = "Use john add/kill to add or remove a john\n\n"
 		else:
-			message += "Uh... I am not sure how to do that, please use john add or john kill\n\n"
+			message = "Uh... I am not sure how to do that, please use john add or john kill\n\n"
 		message += f"There are currently {self.john_add - self.john_kill} johns.\n{self.john_add} johns have been added, {self.john_kill} johns have been killed."
+		if self.john_add < self.john_kill:
+			message += ".. Somehow..."
+		await ctx.send(message)
+
+	@john.command()
+	@commands.cooldown(1, 30, commands.BucketType.user)
+	async def add(self, ctx):
+		"""Adds a john"""
+		self.john_add += 1
+		self.changed = True
+
+		modifier = ""
+		if random() < 0.1:
+			modifier += "poor little "
+		if random() < 0.001:
+			modifier += "rare "
+		if random() < 0.04:
+			modifier += "gay "
+		if random() < 0.005:
+			modifier += "limited edition "
+		if self.john_add - self.john_kill == 69 and random() < 0.69:
+			modifier += "horny "
+		if self.john_add - self.john_kill == 413 and random() < 0.413:
+			modifier += "egbert "
+		if len(modifier) == 0 and random() < 0.1:
+			modifier += "completely generic "
+		if len(modifier) == 0 and random() < 0.01:
+			modifier += "extraordinarily generic "
+
+		message = f"You have successfully added a {modifier}john\n\n" \
+				  f"There are currently {self.john_add - self.john_kill} johns.\n{self.john_add} johns have been added, {self.john_kill} johns have been killed."
+		if self.john_add < self.john_kill:
+			message += ".. Somehow..."
+		await ctx.send(message)
+
+	@john.command()
+	@commands.cooldown(1, 30, commands.BucketType.user)
+	async def kill(self, ctx):
+		"""Removes a john"""
+		self.john_kill += 1
+		self.changed = True
+
+		modifier = ""
+		bonus_sentence = ""
+		if random() < 0.1:
+			modifier += "monstrously "
+			if random() < 0.8:
+				bonus_sentence = " You monster."
+		if random() < 0.04:
+			modifier += "unimaginably "
+			if random() < 0.1:
+				bonus_sentence = " I don't even comprehend."
+		if random() < 0.01:
+			modifier += "very "
+		if random() < 0.005:
+			modifier += "full-on jack-noir "
+			if random() < 0.3:
+				bonus_sentence = " I TOLD YOU ABOUT THE RED MILES JOHN, I TOLD YOU DAWG."
+		if len(modifier) == 0 and random() < 0.1:
+			modifier += "painlessly "
+			if random() < 0.08:
+				bonus_sentence = " v-v"
+		if len(modifier) == 0 and random() < 0.02:
+			modifier += "accidentally "
+			if random() < 0.08:
+				bonus_sentence = " I don't believe your tales."
+
+		message = f"You have {modifier}killed a john.{bonus_sentence}\n\n" \
+				  f"There are currently {self.john_add - self.john_kill} johns.\n{self.john_add} johns have been added, {self.john_kill} johns have been killed."
 		if self.john_add < self.john_kill:
 			message += ".. Somehow..."
 		await ctx.send(message)
@@ -132,14 +149,14 @@ class CounterCog(commands.Cog, name='counting'):
 		if self.changed:
 			self.save()
 
-	def load(self, file = paths.data / "counters/counters.json"):
+	def load(self, file=paths.data / "counters/counters.json"):
 		with open(file, "r") as fp:
 			raw = json.load(fp)
-		self.john_add  = raw.get("john_add",  0)
+		self.john_add = raw.get("john_add",  0)
 		self.john_kill = raw.get("john_kill", 0)
 		self.can = raw.get("can", 0)
 
-	def save(self, file = paths.data / "counters/counters.json"):
+	def save(self, file=paths.data / "counters/counters.json"):
 		with open(file, "w") as fp:
 			json.dump({
 				"john_add":  self.john_add,
@@ -147,10 +164,12 @@ class CounterCog(commands.Cog, name='counting'):
 				"can": self.can
 			}, fp)
 
+
 def setup(bot):
 	cog = CounterCog(bot)
 	cog.load()
 	bot.add_cog(cog)
 
-def teardown(bot): 
+
+def teardown(bot):
 	pass
